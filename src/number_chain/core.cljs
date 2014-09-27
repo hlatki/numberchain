@@ -12,14 +12,22 @@
   (.getElementById js/document id))
 
 (defn my-app []
-  [:div (str "Hello from: " (:app-name @app-state))])
+  [:div
+   [:div (str "Hello from: " (:app-name @app-state))]
+   [:div (str "Number: " (:numbers @app-state))]
+   [:div (str "Target: " (:target @app-state))]
+   ])
 
 (defn init! []
+  (set-numbers-and-target!)
   (reagent/render-component [my-app] (get-element-by-id "app-name")))
 
 (init!)
 
 (comment
+  (-> (generate-numbers)
+      (generate-target))
+  (set-numbers-and-target!)
   (js/alert "Hello Justin!"))
 
 
