@@ -69,18 +69,18 @@
   []
   (let [numbers (:numbers @app-state)]
     [:div.container 
-     [:div.row (for [x (range 0 4)]
-                 (small-cell (nth numbers x)))]
-     [:div.row (for [x (range 4 8)]
-                 (small-cell (nth numbers x)))]
-     [:div.row (for [x (range 8 12)]
-                 (small-cell (nth numbers x)))]
-     [:div.row (for [x (range 12 16)]
-                 (small-cell (nth numbers x)))]
-     [:div.row (for [x (range 16 20)]
-                 (small-cell (nth numbers x)))]
-     [:div.row (for [x (range 20 24)]
-                 (small-cell (nth numbers x)))]
+     (into [:div.row] (for [x (range 0 4)]
+                        (small-cell (nth numbers x))))
+     (into [:div.row] (for [x (range 4 8)]
+                       (small-cell (nth numbers x))))
+     (into [:div.row] (for [x (range 8 12)]
+                        (small-cell (nth numbers x))))
+     (into [:div.row] (for [x (range 12 16)]
+                        (small-cell (nth numbers x))))
+     (into [:div.row] (for [x (range 16 20)]
+                        (small-cell (nth numbers x))))
+     (into [:div.row] (for [x (range 20 24)]
+                        (small-cell (nth numbers x))))
      ]))
 
 (defn set-numbers-and-target!
