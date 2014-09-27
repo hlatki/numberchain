@@ -63,6 +63,14 @@
                   :on-click toggle-selected}
    value])
 
+; A timer component, modified from the reagent tutorial.
+(defn timer-component []
+  (let [seconds-elapsed (atom 0)]
+    (fn []
+      (js/setTimeout #(swap! seconds-elapsed inc) 1000)
+      [:div
+       "Timer: " @seconds-elapsed])))
+
 ; We could clean this up, but it should work for now.
 (defn build-game
   "Reagent component that contains our game grid."
@@ -94,6 +102,7 @@
   (reset! app-state initial-game-state)
   (set-numbers-and-target!)
   (reagent/render-component [my-app] (get-element-by-id "app-name"))
+  (reagent/render-component [timer-component] (get-element-by-id "timer"))
   (reagent/render-component [build-game] (get-element-by-id "game")))
 
 (init!)
