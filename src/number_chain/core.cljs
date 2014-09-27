@@ -13,6 +13,9 @@
 (defn get-element-by-id [id]
   (.getElementById js/document id))
 
+(defn get-elements-by-class-name [cn]
+  (.getElementsByClassName js/document cn))
+
 (defn my-app
   "For now, this will display the current fields in our game state.
    Nice for debugging/visualizing the app-state."
@@ -50,17 +53,22 @@
       (swap! app-state assoc :selected (conj (:selected @app-state) target)))
     (check-win)))
 
+(def div-grid-col :div.col-md-3.col-xs-3.grid-cell)
+(def div-grid-container :div.container)
+(def div-grid-row :div.row)
+
 (defn small-cell
   "Takes a single value from the :numbers app-state value and produces the cell
    that represents that number. Properly sets the bg color and data-id tag
    fields."
   [{:keys [value id]}]
-  [:div.col-xs-3 {:style {:border "1px solid #d3d3d3"
-                          :background (if ((:selected @app-state) id)
-                                        "#999999"
-                                        "#aaaaaa")}
-                  :data-id id
-                  :on-click toggle-selected}
+  [div-grid-col {:style {:border "1px solid #d3d3d3"
+                         :background (if ((:selected @app-state) id)
+                                       "#999999"
+                                       "#aaaaaa")}
+                 :data-id id
+                 :id (str "grid-" id)
+                 :on-click toggle-selected}
    value])
 
 ; A timer component, modified from the reagent tutorial.
@@ -76,19 +84,19 @@
   "Reagent component that contains our game grid."
   []
   (let [numbers (:numbers @app-state)]
-    [:div.container 
-     (into [:div.row] (for [x (range 0 4)]
-                        (small-cell (nth numbers x))))
-     (into [:div.row] (for [x (range 4 8)]
-                       (small-cell (nth numbers x))))
-     (into [:div.row] (for [x (range 8 12)]
-                        (small-cell (nth numbers x))))
-     (into [:div.row] (for [x (range 12 16)]
-                        (small-cell (nth numbers x))))
-     (into [:div.row] (for [x (range 16 20)]
-                        (small-cell (nth numbers x))))
-     (into [:div.row] (for [x (range 20 24)]
-                        (small-cell (nth numbers x))))
+    [div-grid-container
+     (into [div-grid-row] (for [x (range 0 4)]
+                            (small-cell (nth numbers x))))
+     (into [div-grid-row] (for [x (range 4 8)]
+                            (small-cell (nth numbers x))))
+     (into [div-grid-row] (for [x (range 8 12)]
+                            (small-cell (nth numbers x))))
+     (into [div-grid-row] (for [x (range 12 16)]
+                            (small-cell (nth numbers x))))
+     (into [div-grid-row] (for [x (range 16 20)]
+                            (small-cell (nth numbers x))))
+     (into [div-grid-row] (for [x (range 20 24)]
+                            (small-cell (nth numbers x))))
      ]))
 
 (defn set-numbers-and-target!
@@ -98,12 +106,22 @@
         target   (generate-target num-list)]
     (swap! app-state assoc :numbers (wrap-numbers (shuffle num-list)) :target target)))
 
+(defn attach-touch-listeners
+  "Add the touch listeners to all of the grid-cell divs in our game. Needs
+   to happen after each rendering of the game grid."
+  []
+  (let [els (get-elements-by-class-name "grid-cell")
+        size (.-length els)]
+    (doseq [e (range size)]
+      (.addEventListener (aget els e) "touchstart" toggle-selected))))
+
 (defn init! []
   (reset! app-state initial-game-state)
   (set-numbers-and-target!)
   (reagent/render-component [my-app] (get-element-by-id "app-name"))
   (reagent/render-component [timer-component] (get-element-by-id "timer"))
-  (reagent/render-component [build-game] (get-element-by-id "game")))
+  (reagent/render-component [build-game] (get-element-by-id "game"))
+  (attach-touch-listeners))
 
 (init!)
 
