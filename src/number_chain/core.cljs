@@ -55,7 +55,7 @@
    that represents that number. Properly sets the bg color and data-id tag
    fields."
   [{:keys [value id]}]
-  [:div.col-md-3 {:style {:border "1px solid #d3d3d3"
+  [:div.col-xs-3 {:style {:border "1px solid #d3d3d3"
                           :background (if ((:selected @app-state) id)
                                         "#999999"
                                         "#aaaaaa")}
