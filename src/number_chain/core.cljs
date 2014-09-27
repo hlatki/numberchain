@@ -2,6 +2,7 @@
   (:require [reagent.core :as reagent :refer [atom]]
             [number-chain.numbers :refer [generate-numbers generate-target wrap-numbers]]))
 
+(declare init!)
 ;; For now, this is our initial game state. On init! we will reset our app-state atom back to this.
 (def initial-game-state {:app-name "Number Chain"
                          :numbers {}
@@ -9,6 +10,8 @@
                          :selected #{}})
 
 (def app-state (atom initial-game-state))
+
+(def count-down (atom 10)) ;; The count-down var used by the timer
 
 (defn get-element-by-id [id]
   (.getElementById js/document id))
@@ -71,14 +74,6 @@
                  :on-click toggle-selected}
    value])
 
-; A timer component, modified from the reagent tutorial.
-(defn timer-component []
-  (let [seconds-elapsed (atom 0)]
-    (fn []
-      (js/setTimeout #(swap! seconds-elapsed inc) 1000)
-      [:div
-       "Timer: " @seconds-elapsed])))
-
 ; We could clean this up, but it should work for now.
 (defn build-game
   "Reagent component that contains our game grid."
@@ -115,12 +110,60 @@
     (doseq [e (range size)]
       (.addEventListener (aget els e) "touchstart" toggle-selected))))
 
+;; Timer related code
+;; I tried moving this out to timer.cljs, but could not get the reagent
+;; component for the timer to update when it did not live in this ns. This code
+;; also breaks the code reloading of perfection. If you are not working with
+;; things that require the timer, comment the (start-timer!) call in in init!
+;; out to prevent related issues.
+
+(defn timer-fn
+  "Function called every time the counter decrements. If the count-down hits
+   zero, stop the interval and call the time-up-fn in timer-state."
+  []
+  (js/setInterval
+    (fn [] (do (swap! count-down dec)
+               (when (<= @count-down 0)
+                 (stop-timer!)
+                 ((:time-up-fn @timer-state)))))
+    1000))
+
+(def timer-state (atom {:timer-fn timer-fn
+                        :timeout nil
+                        :time-up-fn (fn [] nil)}))
+
+(defn stop-timer! []
+  "Stop the current timers js interval."
+  (when-let [timeout (:timeout @timer-state)]
+    (js/clearTimeout timeout)))
+
+(defn pause-timer! []
+  (stop-timer!)
+  (swap! timer-state assoc :timeout nil))
+
+(defn start-timer!
+  "Kick the timer off, clearing out any existing setIntervals and
+   resetting the countdown back to 10."
+  []
+  (when-let [timeout (:timeout @timer-state)]
+    (js/clearInterval timeout))
+  (reset! count-down 10)
+  (swap! timer-state assoc :timeout ((:timer-fn @timer-state))))
+
+(defn timer-component []
+  [:div "Timer: " @count-down])
+
+(swap! timer-state assoc :time-up-fn (fn [] (js/alert "You lost!") (init!)))
+
+;; End timer code
+
 (defn init! []
   (reset! app-state initial-game-state)
   (set-numbers-and-target!)
   (reagent/render-component [my-app] (get-element-by-id "app-name"))
   (reagent/render-component [timer-component] (get-element-by-id "timer"))
   (reagent/render-component [build-game] (get-element-by-id "game"))
+  (start-timer!)
   (attach-touch-listeners))
 
 (init!)
