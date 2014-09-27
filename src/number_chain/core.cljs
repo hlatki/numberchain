@@ -1,6 +1,7 @@
 (ns number-chain.core
   (:require [reagent.core :as reagent :refer [atom]]
-            [number-chain.numbers :refer [generate-numbers generate-target wrap-numbers]]))
+            [number-chain.numbers :refer [generate-numbers generate-target wrap-numbers]]
+            [clojure.string :as string]))
 
 (declare init!)
 ;; For now, this is our initial game state. On init! we will reset our app-state atom back to this.
@@ -10,6 +11,19 @@
                          :selected #{}})
 
 (def score (atom 0))
+
+(defn load-high-score
+  "Load the high score from the a browser cookie. Return zero if unsuccessful."
+  []
+  (if-let [val (-> (.-cookie js/document) (string/split  #"=") second int)]
+    val
+    0))
+
+(def high-score (atom (load-high-score)))
+
+(defn save-high-score! [score]
+  "Save the high score in a browser cookie."
+  (set! (.-cookie js/document) (str "score=" score)))
 
 (def app-state (atom initial-game-state))
 
@@ -31,6 +45,7 @@
    [:div (str "Target: " (:target @app-state))]
    [:div (str "Selected " (:selected @app-state))]
    [:div (str "Score " @score)]
+   [:div (str "High Score " @high-score)]
    ])
 
 (defn check-win
@@ -46,6 +61,9 @@
         sum (apply + selected-nums)]
     (when (= sum (:target @app-state))
       (reset! score (+ @score (* (count selected-nums) 10)))
+      (when (> @score @high-score)
+        (reset! high-score @score)
+        (save-high-score! @score))
       (js/alert "You won!")
       (init!))))
 
