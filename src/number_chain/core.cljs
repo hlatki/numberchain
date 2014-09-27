@@ -9,6 +9,8 @@
                          :target nil
                          :selected #{}})
 
+(def score (atom 0))
+
 (def app-state (atom initial-game-state))
 
 (def count-down (atom 10)) ;; The count-down var used by the timer
@@ -28,6 +30,7 @@
    [:div (str "Number: " (:numbers @app-state))]
    [:div (str "Target: " (:target @app-state))]
    [:div (str "Selected " (:selected @app-state))]
+   [:div (str "Score " @score)]
    ])
 
 (defn check-win
@@ -42,6 +45,7 @@
                           (:numbers @app-state)))
         sum (apply + selected-nums)]
     (when (= sum (:target @app-state))
+      (reset! score (+ @score (* (count selected-nums) 10)))
       (js/alert "You won!")
       (init!))))
 
@@ -153,7 +157,10 @@
 (defn timer-component []
   [:div "Timer: " @count-down])
 
-(swap! timer-state assoc :time-up-fn (fn [] (js/alert "You lost!") (init!)))
+(swap! timer-state assoc :time-up-fn (fn []
+                                       (js/alert "You lost!")
+                                       (reset! score 0)
+                                       (init!)))
 
 ;; End timer code
 
