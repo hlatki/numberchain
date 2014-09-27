@@ -1,11 +1,18 @@
-(ns number-chain.core)
+(ns number-chain.core
+  (:require [reagent.core :as reagent :refer [atom]]))
 
-(.log js/console "Hello world 2!")
+(def app-state (atom {:app-name "Number Chain"}))
 
-(defn add [a b]
-  (+ a b))
+(defn get-element-by-id [id]
+  (.getElementById js/document id))
 
-(js/alert "Justin")
+(defn my-app []
+  [:div (str "Hello from: " (:app-name @app-state))])
+
+(defn init! []
+  (reagent/render-component [my-app] (get-element-by-id "app-name")))
+
+(init!)
 
 (comment
   (js/alert "Hello Justin!"))
