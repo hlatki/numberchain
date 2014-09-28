@@ -25,9 +25,7 @@
    Nice for debugging/visualizing the app-state."
   []
   [:div
-   [:div (str "Hello from: " (:app-name @app-state))]
-   [:div (str "Number: " (:numbers @app-state))]
-   [:div (str "Selected " (:selected @app-state))]
+   [:div (str (:app-name @app-state))]
    ])
 
 (defn start-game! []
@@ -56,7 +54,7 @@
 
 (defn target-component
   []
-  [:div (str "Target: " (:target @app-state))])
+  [:div.target (str "Target: " (:target @app-state))])
 
 (defn check-win
   "Check our win conditition. Sum up the currently selected cells in our grid
@@ -99,8 +97,8 @@
   [{:keys [value id]}]
   [div-grid-col {:style {:border "1px solid #d3d3d3"
                          :background (if ((:selected @app-state) id)
-                                       "#00aaaa"
-                                       "#aaaaaa")}
+                                       "#e68200"
+                                       "#009bcc")}
                  :data-id id
                  :id (str "grid-" id)
                  :on-click toggle-selected}
@@ -108,8 +106,8 @@
 
 (defn empty-cell
   []
-  [div-grid-col {:style {:border "1px solid #d3d3d3"
-                         :background "#aaaaaa"}}
+  [div-grid-col {:style {:border "1px solid #00baf5"
+                         :background "#009bcc"}}
    \X])
 
 (defn pause-button-component
@@ -128,7 +126,7 @@
 
 (defn start-game-component
   []
-  [:div.filler-container [:button {:on-click start-game!} "Start game?"]])
+  [:div.filler-container "Click numbers that up to the target number. The more terms, the higher your score " [:button {:on-click start-game!} "Start game?"] ])
 
 (defn next-level-component
   []

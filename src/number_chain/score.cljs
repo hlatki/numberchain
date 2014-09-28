@@ -21,5 +21,5 @@
   "Reagent component for the current score and high score."
   []
   [:div
-   [:div (str "Score " @score)]
-   [:div (str "High Score " @high-score)]])
+   [:div.score (str "Score " @score)]
+   [:div.high-score (str "High Score " @high-score)]])

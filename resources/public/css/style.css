@@ -1,19 +1,16 @@
 body {
-  background: white;
-  width: 100%; display: block;
-  position: relative;
-  margin 0 auto;
+  background-color: #106ab1;
 }
 
 #game-grid {
     margin: 0 auto;
-    background-color: gray;
-    width: 300px
+    background-color: #106ab1;
+    width: 300px;
 }
 
 .grid-cell {
     font-size: 2em;
-    background-color: white;
+    background-color: #009bcc;
     display: block;
     float: left;
     height: 55px;
@@ -25,8 +22,13 @@ body {
 
 .filler-container {
     margin: 0 auto;
-    background-color: gray;
+    background-color: #009bcc;
     width: 248px;
     height: 310px;
+    margin: 0 auto;
 }
 
+.target {
+    font-weight: bold;
+    font-size: 2em;
+}
