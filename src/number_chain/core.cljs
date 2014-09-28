@@ -79,9 +79,9 @@
       (swap! app-state assoc :selected (conj (:selected @app-state) target)))
     (check-win)))
 
-(def div-grid-col :div.col-md-3.col-xs-3.grid-cell)
-(def div-grid-container :div.container)
-(def div-grid-row :div.row)
+(def div-grid-col :div.grid-cell)
+(def div-grid-container :div#game-grid)
+(def div-grid-row :div.grid-row)
 
 (defn small-cell
   "Takes a single value from the :numbers app-state value and produces the cell
@@ -121,20 +121,10 @@
   "Reagent component that contains our game grid."
   []
   (let [numbers (:numbers @app-state)]
-    [div-grid-container
-     (into [div-grid-row] (for [x (range 0 4)]
-                            (small-cell (nth numbers x))))
-     (into [div-grid-row] (for [x (range 4 8)]
-                            (small-cell (nth numbers x))))
-     (into [div-grid-row] (for [x (range 8 12)]
-                            (small-cell (nth numbers x))))
-     (into [div-grid-row] (for [x (range 12 16)]
-                            (small-cell (nth numbers x))))
-     (into [div-grid-row] (for [x (range 16 20)]
-                            (small-cell (nth numbers x))))
-     (into [div-grid-row] (for [x (range 20 24)]
-                            (small-cell (nth numbers x))))
-     ]))
+      [div-grid-container
+      (for [x (range 0 20)]
+            (small-cell (nth numbers x)))
+            ]))
 
 (defn game-component
   []

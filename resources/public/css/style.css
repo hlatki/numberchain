@@ -1,3 +1,24 @@
 body {
   background: white;
+  width: 100%; display: block;
+  position: relative;
+  margin 0 auto;
 }
+
+#game-grid {
+    margin: 0 auto;
+    background-color: gray;
+    width: 300px
+}
+
+.grid-cell {
+    background-color: white;
+    display: block;
+    float: left;
+    height: 55px;
+    width: 55px;
+    margin: 3.5px;
+    text-align: center;
+    line-height: 68px;
+}
+
