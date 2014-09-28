@@ -12,6 +12,7 @@ body {
 }
 
 .grid-cell {
+    font-size: 2em;
     background-color: white;
     display: block;
     float: left;
@@ -19,7 +20,7 @@ body {
     width: 55px;
     margin: 3.5px;
     text-align: center;
-    line-height: 68px;
+    line-height: 55px;
 }
 
 .filler-container {
