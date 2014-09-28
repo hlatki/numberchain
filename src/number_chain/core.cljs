@@ -1,7 +1,7 @@
 (ns number-chain.core
   (:require [reagent.core :as reagent :refer [atom]]
             [number-chain.numbers :refer [generate-numbers generate-target wrap-numbers]]
-            [number-chain.timer :refer [start-timer! timer-component count-down timer-state]]
+            [number-chain.timer :refer [start-timer! timer-component count-down timer-state stop-timer!]]
             [number-chain.score :refer [score high-score save-high-score! load-high-score score-component]]))
 
 (declare init!)
@@ -49,6 +49,7 @@
       (when (> @score @high-score)
         (reset! high-score @score)
         (save-high-score! @score))
+      (stop-timer!)
       (js/alert "You won!")
       (init!))))
 
