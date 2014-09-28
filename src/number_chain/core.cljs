@@ -90,7 +90,7 @@
   [{:keys [value id]}]
   [div-grid-col {:style {:border "1px solid #d3d3d3"
                          :background (if ((:selected @app-state) id)
-                                       "#999999"
+                                       "#00aaaa"
                                        "#aaaaaa")}
                  :data-id id
                  :id (str "grid-" id)
