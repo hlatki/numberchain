@@ -4,15 +4,13 @@
             [number-chain.timer :refer [start-timer! timer-component count-down timer-state stop-timer!]]
             [number-chain.score :refer [score high-score save-high-score! load-high-score score-component]]))
 
-(declare init!)
+(declare init! game-over! attach-touch-listeners set-numbers-and-target!)
 ;; For now, this is our initial game state. On init! we will reset our app-state atom back to this.
 (def initial-game-state {:app-name "Number Chain"
                          :numbers {}
                          :target nil
-                         :selected #{}})
-
-;; We need the symbols defined in this ns to be called when the countdown runs out.
-(swap! timer-state assoc :time-up-fn (fn [] (js/alert "You lost!") (reset! score 0) (init!))) 
+                         :selected #{}
+                         :play-state :new-game})
 
 (def app-state (atom initial-game-state))
 
@@ -31,6 +29,21 @@
    [:div (str "Number: " (:numbers @app-state))]
    [:div (str "Selected " (:selected @app-state))]
    ])
+
+(defn start-game! []
+  ;(reset! app-state initial-game-state)
+  (set-numbers-and-target!)
+  (swap! app-state assoc :play-state :active :selected #{})
+  (start-timer!)
+  (attach-touch-listeners))
+
+(defn game-over! []
+  (reset! score 0)
+  (swap! app-state assoc :play-state :game-over))
+
+;; We need the symbols defined in this ns to be called when the countdown runs out.
+(swap! timer-state assoc :time-up-fn game-over!)
+
 
 (defn target-component
   []
@@ -53,8 +66,7 @@
         (reset! high-score @score)
         (save-high-score! @score))
       (stop-timer!)
-      (js/alert "You won!")
-      (init!))))
+      (swap! app-state assoc :play-state :next-level))))
 
 (defn toggle-selected
   "Called when a click is recieved on one of our game cells. Adds or removes
@@ -85,6 +97,25 @@
                  :on-click toggle-selected}
    value])
 
+(defn empty-cell
+  []
+  [div-grid-col {:style {:border "1px solid #d3d3d3"
+                         :background "#aaaaaa"}}
+   \X])
+
+(defn start-game-component
+  []
+  [:div.grid-container [:button {:on-click start-game!} "Start game?"]])
+
+(defn next-level-component
+  []
+  [:div.grid-container [:button {:on-click start-game!} "You won! Next Level!"]])
+
+(defn game-over-component
+  []
+  [:div.grid-container [:button {:on-click start-game!} "Game Over! Retry?"]])
+
+
 ; We could clean this up, but it should work for now.
 (defn build-game
   "Reagent component that contains our game grid."
@@ -105,6 +136,15 @@
                             (small-cell (nth numbers x))))
      ]))
 
+(defn game-component
+  []
+  (condp = (:play-state @app-state)
+    :new-game (start-game-component)
+    :next-level (next-level-component)
+    :active (build-game)
+    :game-over (game-over-component)
+    :else (empty-grid)))
+
 (defn set-numbers-and-target!
   "Set the state of the numbers and the sum target -- call this one"
   []
@@ -122,15 +162,11 @@
       (.addEventListener (aget els e) "touchstart" toggle-selected))))
 
 (defn init! []
-  (reset! app-state initial-game-state)
-  (set-numbers-and-target!)
   (reagent/render-component [my-app] (get-element-by-id "app-name"))
   (reagent/render-component [target-component] (get-element-by-id "rules"))
   (reagent/render-component [timer-component] (get-element-by-id "timer"))
-  (reagent/render-component [build-game] (get-element-by-id "game"))
-  (reagent/render-component [score-component] (get-element-by-id "score"))
-  (start-timer!)
-  (attach-touch-listeners))
+  (reagent/render-component [game-component] (get-element-by-id "game"))
+  (reagent/render-component [score-component] (get-element-by-id "score")))
 
 (init!)
 
