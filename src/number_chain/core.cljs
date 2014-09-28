@@ -74,12 +74,12 @@
                           (:numbers @app-state)))
         sum (apply + selected-nums)]
     (when (= sum (:target @app-state))
+      (remove-touch-listeners!)
       (reset! score (+ @score (* (count selected-nums) 10)))
       (when (> @score @high-score)
         (reset! high-score @score)
         (save-high-score! @score))
       (stop-timer!)
-      (remove-touch-listeners!)
       (js/setTimeout #(swap! app-state assoc :play-state :next-level) 500))))
 
 (defn toggle-selected
