@@ -121,10 +121,10 @@
   "Reagent component that contains our game grid."
   []
   (let [numbers (:numbers @app-state)]
-      [div-grid-container
-      (for [x (range 0 20)]
-            (small-cell (nth numbers x)))
-            ]))
+      (into [div-grid-container]
+            (for [x (range 0 20)]
+              (small-cell (nth numbers x)))
+            )))
 
 (defn game-component
   []
