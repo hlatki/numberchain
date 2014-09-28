@@ -1,7 +1,7 @@
 (ns number-chain.core
   (:require [reagent.core :as reagent :refer [atom]]
             [number-chain.numbers :refer [generate-numbers generate-target wrap-numbers]]
-            [number-chain.timer :refer [start-timer! timer-component count-down timer-state stop-timer!]]
+            [number-chain.timer :refer [start-timer! timer-component count-down timer-state stop-timer! pause-timer!]]
             [number-chain.score :refer [score high-score save-high-score! load-high-score score-component]]))
 
 (declare init! game-over! attach-touch-listeners! set-numbers-and-target!)
@@ -33,6 +33,7 @@
 (defn start-game! []
   ;(reset! app-state initial-game-state)
   (set-numbers-and-target!)
+  (reset! count-down 10)
   (swap! app-state assoc :play-state :active :selected #{})
   (start-timer!)
   (js/setTimeout #(attach-touch-listeners!) 50)) ; This is bad. I don't know what to do about it though
@@ -40,6 +41,14 @@
 (defn game-over! []
   (reset! score 0)
   (swap! app-state assoc :play-state :game-over))
+
+(defn toggle-pause-game! []
+  (let [play-state (:play-state @app-state)]
+    (condp = play-state
+      :active (do (pause-timer!) (swap! app-state assoc :play-state :paused))
+      :paused (do (start-timer!) (swap! app-state assoc :play-state :active))
+      nil
+      )))
 
 ;; We need the symbols defined in this ns to be called when the countdown runs out.
 (swap! timer-state assoc :time-up-fn game-over!)
@@ -103,6 +112,20 @@
                          :background "#aaaaaa"}}
    \X])
 
+(defn pause-button-component
+  []
+  (let [play-state (:play-state @app-state)
+        btn-txt (condp = play-state
+                  :paused "Unpause"
+                  :active "Pause"
+                  "")]
+    (if (not= btn-txt "")
+      [:button {:on-click toggle-pause-game!} btn-txt])))
+
+(defn pause-component
+  []
+  [:div.filler-container "Paused!"])
+
 (defn start-game-component
   []
   [:div.filler-container [:button {:on-click start-game!} "Start game?"]])
@@ -133,6 +156,7 @@
     :next-level (next-level-component)
     :active (build-game)
     :game-over (game-over-component)
+    :paused (pause-component)
     :else (empty-grid)))
 
 (defn set-numbers-and-target!
@@ -156,6 +180,7 @@
   (reagent/render-component [target-component] (get-element-by-id "rules"))
   (reagent/render-component [timer-component] (get-element-by-id "timer"))
   (reagent/render-component [game-component] (get-element-by-id "game"))
+  (reagent/render-component [pause-button-component] (get-element-by-id "pause"))
   (reagent/render-component [score-component] (get-element-by-id "score")))
 
 (init!)

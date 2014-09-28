@@ -34,7 +34,6 @@
   []
   (when-let [timeout (:timeout @timer-state)]
     (js/clearInterval timeout))
-  (reset! count-down 10)
   (swap! timer-state assoc :timeout ((:timer-fn @timer-state))))
 
 (defn timer-component []
