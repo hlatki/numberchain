@@ -1,5 +1,7 @@
 body {
   background-color: #106ab1;
+  font-family: 'Oswald', sans-serif;
+  color: #fff;
 }
 
 #game-grid {
@@ -26,9 +28,18 @@ body {
     width: 248px;
     height: 310px;
     margin: 0 auto;
+    color: #000;
 }
 
 .target {
     font-weight: bold;
     font-size: 2em;
+}
+
+#app-name {
+    text-align: center;
+    font-weight: bold;
+    font-size: 3em;
+    font-family: 'Pacifico', cursive;
+    color: #fff;
 }
