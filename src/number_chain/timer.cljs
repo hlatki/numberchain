@@ -38,5 +38,5 @@
   (swap! timer-state assoc :timeout ((:timer-fn @timer-state))))
 
 (defn timer-component []
-  [:div "Timer: " @count-down])
+  [:div "Timer: " (repeat @count-down \I)])
 
