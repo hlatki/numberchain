@@ -4,7 +4,7 @@
             [number-chain.timer :refer [start-timer! timer-component count-down timer-state stop-timer!]]
             [number-chain.score :refer [score high-score save-high-score! load-high-score score-component]]))
 
-(declare init! game-over! attach-touch-listeners set-numbers-and-target!)
+(declare init! game-over! attach-touch-listeners! set-numbers-and-target!)
 ;; For now, this is our initial game state. On init! we will reset our app-state atom back to this.
 (def initial-game-state {:app-name "Number Chain"
                          :numbers {}
@@ -35,7 +35,7 @@
   (set-numbers-and-target!)
   (swap! app-state assoc :play-state :active :selected #{})
   (start-timer!)
-  (attach-touch-listeners))
+  (js/setTimeout #(attach-touch-listeners!) 50)) ; This is bad. I don't know what to do about it though
 
 (defn game-over! []
   (reset! score 0)
@@ -142,7 +142,7 @@
         target   (generate-target num-list)]
     (swap! app-state assoc :numbers (wrap-numbers (shuffle num-list)) :target target)))
 
-(defn attach-touch-listeners
+(defn attach-touch-listeners!
   "Add the touch listeners to all of the grid-cell divs in our game. Needs
    to happen after each rendering of the game grid."
   []
