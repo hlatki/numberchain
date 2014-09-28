@@ -2,7 +2,7 @@
   (:require [reagent.core :as reagent :refer [atom]]
             [number-chain.numbers :refer [generate-numbers generate-target wrap-numbers]]
             [number-chain.timer :refer [start-timer! timer-component count-down timer-state]]
-            [number-chain.score :refer [score high-score save-high-score! load-high-score]]))
+            [number-chain.score :refer [score high-score save-high-score! load-high-score score-component]]))
 
 (declare init!)
 ;; For now, this is our initial game state. On init! we will reset our app-state atom back to this.
@@ -31,8 +31,6 @@
    [:div (str "Number: " (:numbers @app-state))]
    [:div (str "Target: " (:target @app-state))]
    [:div (str "Selected " (:selected @app-state))]
-   [:div (str "Score " @score)]
-   [:div (str "High Score " @high-score)]
    ])
 
 (defn check-win
@@ -125,6 +123,7 @@
   (reagent/render-component [my-app] (get-element-by-id "app-name"))
   (reagent/render-component [timer-component] (get-element-by-id "timer"))
   (reagent/render-component [build-game] (get-element-by-id "game"))
+  (reagent/render-component [score-component] (get-element-by-id "score"))
   (start-timer!)
   (attach-touch-listeners))
 

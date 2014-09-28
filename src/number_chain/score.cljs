@@ -17,3 +17,9 @@
   "Save the high score in a browser cookie."
   (set! (.-cookie js/document) (str "score=" score)))
 
+(defn score-component
+  "Reagent component for the current score and high score."
+  []
+  [:div
+   [:div (str "Score " @score)]
+   [:div (str "High Score " @high-score)]])
