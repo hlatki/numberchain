@@ -4,7 +4,7 @@
             [number-chain.timer :refer [start-timer! timer-component count-down timer-state stop-timer! pause-timer!]]
             [number-chain.score :refer [score high-score save-high-score! load-high-score score-component]]))
 
-(declare init! game-over! attach-touch-listeners! set-numbers-and-target!)
+(declare init! game-over! attach-touch-listeners! set-numbers-and-target! remove-touch-listeners!)
 ;; For now, this is our initial game state. On init! we will reset our app-state atom back to this.
 (def initial-game-state {:app-name "Number Chain"
                          :numbers {}
@@ -73,7 +73,8 @@
         (reset! high-score @score)
         (save-high-score! @score))
       (stop-timer!)
-      (swap! app-state assoc :play-state :next-level))))
+      (remove-touch-listeners!)
+      (js/setTimeout #(swap! app-state assoc :play-state :next-level) 500))))
 
 (defn toggle-selected
   "Called when a click is recieved on one of our game cells. Adds or removes
@@ -172,6 +173,16 @@
         size (.-length els)]
     (doseq [e (range size)]
       (.addEventListener (aget els e) "touchstart" toggle-selected))))
+
+(defn remove-touch-listeners!
+  "Remove the touch listeners to all of the grid-cell divs in our game. Needs
+   to happen after each rendering of the game grid."
+  []
+  (let [els (get-elements-by-class-name "grid-cell")
+        size (.-length els)]
+    (doseq [e (range size)]
+      (.removeEventListener (aget els e) "touchstart" toggle-selected))))
+
 
 (defn init! []
   (reagent/render-component [my-app] (get-element-by-id "app-name"))
