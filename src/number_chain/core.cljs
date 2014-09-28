@@ -105,15 +105,15 @@
 
 (defn start-game-component
   []
-  [:div.grid-container [:button {:on-click start-game!} "Start game?"]])
+  [:div.filler-container [:button {:on-click start-game!} "Start game?"]])
 
 (defn next-level-component
   []
-  [:div.grid-container [:button {:on-click start-game!} "You won! Next Level!"]])
+  [:div.filler-container [:button {:on-click start-game!} "You won! Next Level!"]])
 
 (defn game-over-component
   []
-  [:div.grid-container [:button {:on-click start-game!} "Game Over! Retry?"]])
+  [:div.filler-container [:button {:on-click start-game!} "Game Over! Retry?"]])
 
 
 ; We could clean this up, but it should work for now.

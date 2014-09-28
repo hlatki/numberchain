@@ -22,3 +22,10 @@ body {
     line-height: 68px;
 }
 
+.filler-container {
+    margin: 0 auto;
+    background-color: gray;
+    width: 300px;
+    height: 310px;
+}
+
