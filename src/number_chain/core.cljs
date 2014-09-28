@@ -126,7 +126,7 @@
 
 (defn start-game-component
   []
-  [:div.filler-container "Click numbers that up to the target number. The more terms, the higher your score " [:button {:on-click start-game!} "Start game?"] ])
+  [:div.filler-container "Click numbers that sum up to the target number. The more you select, the higher your score " [:button {:on-click start-game!} "Start game?"] ])
 
 (defn next-level-component
   []
