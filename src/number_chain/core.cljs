@@ -29,9 +29,12 @@
   [:div
    [:div (str "Hello from: " (:app-name @app-state))]
    [:div (str "Number: " (:numbers @app-state))]
-   [:div (str "Target: " (:target @app-state))]
    [:div (str "Selected " (:selected @app-state))]
    ])
+
+(defn target-component
+  []
+  [:div (str "Target: " (:target @app-state))])
 
 (defn check-win
   "Check our win conditition. Sum up the currently selected cells in our grid
@@ -122,6 +125,7 @@
   (reset! app-state initial-game-state)
   (set-numbers-and-target!)
   (reagent/render-component [my-app] (get-element-by-id "app-name"))
+  (reagent/render-component [target-component] (get-element-by-id "rules"))
   (reagent/render-component [timer-component] (get-element-by-id "timer"))
   (reagent/render-component [build-game] (get-element-by-id "game"))
   (reagent/render-component [score-component] (get-element-by-id "score"))
