@@ -5,11 +5,16 @@
             [number-chain.score :refer [score high-score save-high-score! load-high-score score-component]]))
 
 (declare init! game-over! attach-touch-listeners! set-numbers-and-target! remove-touch-listeners!)
+
+;; Fuschia, Purple, Green, Red, Cyan
+(def selection-colors (atom (cycle ["#d800a8" "#7400b7" "#62d100" "#ff0047" "#00e1e9"])))
+
 ;; For now, this is our initial game state. On init! we will reset our app-state atom back to this.
 (def initial-game-state {:app-name "Number Chain"
                          :numbers {}
                          :target nil
                          :selected #{}
+                         :selection-color "#000000"
                          :play-state :new-game})
 
 (def app-state (atom initial-game-state))
@@ -32,7 +37,8 @@
   ;(reset! app-state initial-game-state)
   (set-numbers-and-target!)
   (reset! count-down 10)
-  (swap! app-state assoc :play-state :active :selected #{})
+  (swap! app-state assoc :play-state :active :selected #{} :selection-color (first @selection-colors))
+  (swap! selection-colors rest)
   (start-timer!)
   (js/setTimeout #(attach-touch-listeners!) 50)) ; This is bad. I don't know what to do about it though
 
@@ -98,7 +104,7 @@
   [{:keys [value id]}]
   [div-grid-col {:style {:border "1px solid #d3d3d3"
                          :background (if ((:selected @app-state) id)
-                                       "#e68200"
+                                       (:selection-color @app-state)
                                        "#009bcc")}
                  :data-id id
                  :id (str "grid-" id)
