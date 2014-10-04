@@ -50,7 +50,7 @@
   (let [play-state (:play-state @app-state)]
     (condp = play-state
       :active (do (pause-timer!) (swap! app-state assoc :play-state :paused))
-      :paused (do (start-timer!) (swap! app-state assoc :play-state :active))
+      :paused (do (start-timer!) (swap! app-state assoc :play-state :active) (js/setTimeout #(attach-touch-listeners!) 50))
       nil
       )))
 
