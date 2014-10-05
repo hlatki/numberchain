@@ -9,6 +9,15 @@ body {
     margin: 0 auto;
     background-color: #106ab1;
     width: 300px;
+    z-index: 1;
+}
+
+#overlay {
+    position: absolute;
+    width: 248px;
+    height: 310px;
+    background: rgba(255, 255, 255, .3);
+    z-index: 10;
 }
 
 .grid-cell {
@@ -25,10 +34,11 @@ body {
 
 .filler-container {
     margin: 0 auto;
-    background-color: #009bcc;
     width: 248px;
     height: 310px;
     margin: 0 auto;
+    text-align: center;
+    vertical-align: middle;
     color: #000;
 }
 
