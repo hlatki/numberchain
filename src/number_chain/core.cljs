@@ -25,6 +25,20 @@
 (defn get-elements-by-class-name [cn]
   (.getElementsByClassName js/document cn))
 
+(defn panel-cell [contents attrs]
+  (let [default-attrs {:style {:border "1px solid #d3d3d3" :background "#009b77"}}]
+    [div-grid-col-panel (if attrs (merge default-attrs attrs) default-attrs)
+     contents])
+  )
+(defn game-panel []
+  [
+    (panel-cell (if (= :active (:play-state @app-state)) @score " "))
+    (panel-cell (if (= :active (:play-state @app-state)) (:target @app-state) " "))
+    (panel-cell (if (= :active (:play-state @app-state)) @count-down " "))
+    (panel-cell "P" {:on-click toggle-pause-game!})
+    ]
+  )
+
 (defn my-app
   "For now, this will display the current fields in our game state.
    Nice for debugging/visualizing the app-state."
@@ -94,6 +108,7 @@
     (check-win)))
 
 (def div-grid-col :div.grid-cell)
+(def div-grid-col-panel :div.grid-cell-panel)
 (def div-grid-container :div#game-grid)
 (def div-grid-row :div.grid-row)
 
@@ -121,10 +136,10 @@
 (defn empty-grid
   "Create an grid of empty squares and an overlay to render into."
   [contents]
-  (into [div-grid-container [:div#overlay contents]]
+  (into (into [div-grid-container [:div#overlay contents]]
         (for [x (range 0 20)]
-          (small-cell " "))
-        ))
+          (small-cell " ")))
+        (game-panel)))
 
 (defn pause-button-component
   []
@@ -158,10 +173,11 @@
   "Reagent component that contains our game grid."
   []
   (let [numbers (:numbers @app-state)]
+    (into
       (into [div-grid-container]
             (for [x (range 0 20)]
-              (small-cell (nth numbers x)))
-            )))
+              (small-cell (nth numbers x))))
+      (game-panel))))
 
 (defn game-component
   []
@@ -201,11 +217,8 @@
 
 (defn init! []
   (reagent/render-component [my-app] (get-element-by-id "app-name"))
-  (reagent/render-component [target-component] (get-element-by-id "rules"))
-  (reagent/render-component [timer-component] (get-element-by-id "timer"))
   (reagent/render-component [game-component] (get-element-by-id "game"))
-  (reagent/render-component [pause-button-component] (get-element-by-id "pause"))
-  (reagent/render-component [score-component] (get-element-by-id "score")))
+  )
 
 (init!)
 

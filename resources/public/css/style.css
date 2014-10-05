@@ -20,6 +20,18 @@ body {
     z-index: 10;
 }
 
+.grid-cell-panel {
+    font-size: 2em;
+    background-color: #009bcc;
+    display: block;
+    float: left;
+    height: 55px;
+    width: 55px;
+    margin: 3.5px;
+    text-align: center;
+    line-height: 55px;
+}
+
 .grid-cell {
     font-size: 2em;
     background-color: #009bcc;
