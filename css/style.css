@@ -1,0 +1,68 @@
+body {
+  background-color: #106ab1;
+  font-family: 'Oswald', sans-serif;
+  color: #fff;
+  cursor: default;
+}
+
+#game-grid {
+    margin: 0 auto;
+    background-color: #106ab1;
+    width: 300px;
+    z-index: 1;
+}
+
+#overlay {
+    position: absolute;
+    width: 248px;
+    height: 310px;
+    background: rgba(255, 255, 255, .3);
+    z-index: 10;
+}
+
+.grid-cell-panel {
+    font-size: 2em;
+    background-color: #009bcc;
+    display: block;
+    float: left;
+    height: 55px;
+    width: 55px;
+    margin: 3.5px;
+    text-align: center;
+    line-height: 55px;
+}
+
+.grid-cell {
+    font-size: 2em;
+    background-color: #009bcc;
+    display: block;
+    float: left;
+    height: 55px;
+    width: 55px;
+    margin: 3.5px;
+    text-align: center;
+    line-height: 55px;
+}
+
+.filler-container {
+    margin: 0 auto;
+    width: 248px;
+    height: 310px;
+    margin: 0 auto;
+    text-align: center;
+    vertical-align: middle;
+    color: #000;
+}
+
+.target {
+    font-weight: bold;
+    font-size: 2em;
+}
+
+#app-name {
+    text-align: center;
+    font-weight: bold;
+    font-size: 3em;
+    font-family: 'Pacifico', cursive;
+    color: #fff;
+}
